@@ -12,7 +12,7 @@ Cards = ['2L',
          '7L',
          '8L',
          '9L',
-         '10L',
+         'TL',
          'JL',
          'QL',
          'KL',
@@ -25,15 +25,30 @@ Cards = ['2L',
          '7R',
          '8R',
          '9R',
-         '10R',
+         'TR',
          'JR',
          'QR',
          'KR',
          'AR',
     ]
 
+myHand=[]
+
 for i in Cards:
     fileName = str('Numbers\\' + i + '.jpg')
-    print('searching for: ' + fileName)
-    result = pyautogui.locateAll(fileName, img, confidence=0.99, grayscale=True)
-    print(list(result))
+    #print('searching for: ' + fileName)
+    result = pyautogui.locateAll(fileName, img, confidence=0.98, grayscale=True)
+    
+    resultList = list(result)
+    #print(resultList)
+    if not resultList:
+        continue
+    elif len(resultList) == 1:
+        myHand.append(i[:1])
+    else:
+        raise Exception("Confidence too low")
+
+if len(myHand) < 2:
+    raise Exception("Confidence too high")
+
+print(list(myHand))
