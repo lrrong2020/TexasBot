@@ -1,7 +1,7 @@
 import pyautogui
 
 
-myHand=[]
+myCards=[]
 
 def getNumber():
     myArea = (1350, 998, 200, 70)
@@ -21,15 +21,15 @@ def getNumber():
         if not resultList:
             continue
         elif len(resultList) == 1:
-            myHand.append(i[:1])
+            myCards.append(i[:1])
         else:
             raise Exception("Found more than 1 card that mathces")
 
-    if len(myHand) < 2:
-        print(list(myHand))
+    if len(myCards) < 2:
+        print(list(myCards))
         raise Exception("Cannot find 2 hand cards")
 
-    #print(list(myHand))
+    #print(list(myCards))
 
 def getSuit():
     leftPos = (1432, 1089)
@@ -51,20 +51,32 @@ def getSuit():
         elif pyautogui.pixelMatchesColor(*pos, (66, 64, 207), tolerance=50):
             return 'd'
         else:
-            return 'x'
+            raise Exception("Suit no match")
 
     #print('Left: '+belongsColor(leftPos))
     #print('Right: '+belongsColor(rightPos))
 
-    myHand[0]+=belongsColor(leftPos)
-    myHand[1]+=belongsColor(rightPos)
+    myCards[0]+=belongsColor(leftPos)
+    myCards[1]+=belongsColor(rightPos)
 
 '''
 Sort hand
 '''
+    
 
+def cardsToHand(cards):
+    card1=cards[0][:1]
+    suit1=cards[0][1:]
+    card2=cards[1][:1]
+    suit2=cards[1][1:]
+    
+    #compare
+    cmpStr='23456789TJQKA'
+    return (card2+suit2+card1+suit1) if cmpStr.index(card1)<cmpStr.index(card2) else (card1+suit1+card2+suit2)
+    
 
 
 getNumber()
 getSuit()
-print(list(myHand))
+print(list(myCards))
+print(cardsToHand(myCards))
