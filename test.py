@@ -59,6 +59,12 @@ def getSuit():
     myHand[0]+=belongsColor(leftPos)
     myHand[1]+=belongsColor(rightPos)
 
+'''
+Sort hand
+'''
+
+
+
 getNumber()
 getSuit()
 print(list(myHand))

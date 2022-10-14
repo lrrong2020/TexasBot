@@ -16,16 +16,28 @@ def getMyRound():
 
   isYellowCircleDisplaying(thread)
 
+def allIn():
+  pyautogui.press('r')#raise
+  pyautogui.click(x=1400, y=918)#all-in
+  pyautogui.click(x=1724, y=958)#enter
+
+def fold():
+  pyautogui.press('f')
+  
 def isYellowCircleDisplaying(thread):
   isMyTurn = not pyautogui.pixelMatchesColor(*yellowCirclePoint1080, (0, 0, 0), tolerance=50)
   if isMyTurn:
       print("My Turn!")
       
-      #pyautogui.press('f')
       
-      pyautogui.press('r')
-      pyautogui.click(x=1400, y=918)#all-in
-      pyautogui.click(x=1724, y=958)#enter
+      '''
+      Check if hand is in range
+      '''
+
+      '''
+      all-in or fold
+      '''
+
       
       isMyTurn=False
       thread.cancel()
