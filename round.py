@@ -14,6 +14,9 @@ def getMyRound():
   isMyTurn=isYellowCircleDisplaying()
   if isMyTurn:
       print("My Turn!")
+      
+      pyautogui.press('f')
+      
       thread.cancel()
   else:
       print("Not my turn")
