@@ -10,7 +10,10 @@ myHand=None
 
 pairs=['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22']
 broadways=['AK','AQ','AJ','KQ','KJ','QJ']
-allinRange=itertools.chain(pairs, broadways)
+
+hasAce=['AA','A2','A3','A4','A5','A6','A7','A8','A9','AT','AJ','AQ','AK']
+
+allinRange=list(itertools.chain(pairs, broadways,hasAce))
 #allinRange=['AA','KK','AK','AQ','QQ','JJ','TT','99','88']
 
 thread=None
@@ -25,6 +28,8 @@ myArea = (1350, 998, 200, 70)
 yellowCirclePoint = (2230, 1064)
 
 def getNumber():
+    global conf
+    
     img = pyautogui.screenshot(region=myArea)
 
     Cards = ['2L','3L','4L','5L','6L','7L','8L','9L','TL','JL','QL','KL','AL','2R','3R','4R','5R','6R','7R','8R', '9R','TR','JR','QR','KR','AR',]
@@ -32,7 +37,7 @@ def getNumber():
     for i in Cards:
         fileName = str('Numbers\\' + i + '.jpg')
         #print('searching for: ' + fileName)
-        result = pyautogui.locateAll(fileName, img, confidence=0.98, grayscale=True)
+        result = pyautogui.locateAll(fileName, img, confidence=conf, grayscale=True)
     
         resultList = list(result)
         #print(resultList)
@@ -47,13 +52,13 @@ def getNumber():
             getNumber()
 
     if len(myCards) < 2:
-        print(list(myCards))
+        print(myCards)
         #raise Exception("Cannot find 2 hand cards")
         print("confidence may be too high. -0.01")
         conf-=0.01
         getNumber()
 
-    #print(list(myCards))
+    #print(myCards)
 
 def getSuit():
     leftPos = (1432, 1089)
@@ -97,9 +102,9 @@ def cardsToHand(cards):
 
 #check range
 def checkRange(hand, rg):
-    print("Checking " + hand + " in range: ")
-    print(list(rg))
-    return hand[:1]+hand[2:3] in rg
+    print("Checking " + hand[:1]+hand[2:3] + " in range: ")
+    print(rg)
+    return any(hand[:1]+hand[2:3] in r for r in rg)
 
 
 def getMyRound():
@@ -126,14 +131,19 @@ def isYellowCircleDisplaying(thread):
         else:
             print("Not in all-in range. I fold")
             fold()
-        
+
         isMyTurn=False
+
         thread.cancel()
     else:
-        print("Not my turn")
+        #print("Not my turn")
         return
-
+'''
 getNumber()
 getSuit()
 myHand=cardsToHand(myCards)
+print("My hand: " + myHand)
 getMyRound()
+'''
+print(checkRange('AdJs',allinRange))
+
