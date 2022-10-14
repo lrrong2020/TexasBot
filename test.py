@@ -5,6 +5,7 @@ myHand=[]
 
 def getNumber():
     myArea = (1350, 998, 200, 70)
+    #myArea1080 = (1028, 749, 200, 80)
 
     img = pyautogui.screenshot(region=myArea)
 
@@ -25,6 +26,7 @@ def getNumber():
             raise Exception("Found more than 1 card that mathces")
 
     if len(myHand) < 2:
+        print(list(myHand))
         raise Exception("Cannot find 2 hand cards")
 
     #print(list(myHand))
