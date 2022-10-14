@@ -22,10 +22,10 @@ def getNumber():
         elif len(resultList) == 1:
             myHand.append(i[:1])
         else:
-            raise Exception("Confidence too low")
+            raise Exception("Found more than 1 card that mathces")
 
     if len(myHand) < 2:
-        raise Exception("Confidence too high")
+        raise Exception("Cannot find 2 hand cards")
 
     #print(list(myHand))
 
