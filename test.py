@@ -3,10 +3,7 @@ import threading
 import time
 import itertools
 
-conf = 0.98
-
-myCards=[]
-myHand=None
+conf=0.98
 
 pairs=['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22']
 broadways=['AK','AQ','AJ','KQ','KJ','QJ']
@@ -15,9 +12,6 @@ hasAce=['AA','A2','A3','A4','A5','A6','A7','A8','A9','AT','AJ','AQ','AK']
 
 allinRange=list(itertools.chain(pairs, broadways,hasAce))
 #allinRange=['AA','KK','AK','AQ','QQ','JJ','TT','99','88']
-
-thread=None
-isMyTurn=False
 
 myArea = (1350, 998, 200, 70)
 #myArea1080 = (1028, 749, 200, 80)
@@ -28,7 +22,8 @@ myArea = (1350, 998, 200, 70)
 yellowCirclePoint = (2230, 1064)
 
 def getNumber():
-    global conf
+    global conf, myCards
+    myCards=[]
     
     img = pyautogui.screenshot(region=myArea)
 
@@ -97,8 +92,26 @@ def cardsToHand(cards):
     
     #compare
     cmpStr='23456789TJQKA'
-    return (card2+suit2+card1+suit1) if cmpStr.index(card1)<cmpStr.index(card2) else (card1+suit1+card2+suit2)
+    
+    result = (card2+suit2+card1+suit1) if cmpStr.index(card1)<cmpStr.index(card2) else (card1+suit1+card2+suit2)
 
+    print("converted" + str(cards) + " to " + result)
+
+    return result
+
+def getHand():
+    getNumber()
+    getSuit()
+    print("got Cards" + str(myCards))
+
+    if len(myCards) != 2:
+        raise Exception("myCards incorrect!")
+    
+    return cardsToHand(myCards)
+
+def reset():
+    myCards=[]
+    myHand=''
 
 #check range
 def checkRange(hand, rg):
@@ -106,44 +119,49 @@ def checkRange(hand, rg):
     print(rg)
     return any(hand[:1]+hand[2:3] in r for r in rg)
 
-
-def getMyRound():
-    thread=threading.Timer(0.6, getMyRound)
-    thread.start()
-
-    isYellowCircleDisplaying(thread)
-
 def allIn():
     pyautogui.press('r')#raise
+    time.sleep(0.1)
     pyautogui.click(x=1400, y=918)#all-in
+    time.sleep(0.1)
     pyautogui.click(x=1724, y=958)#enter
 
 def fold():
     pyautogui.press('f')
-  
-def isYellowCircleDisplaying(thread):
-    isMyTurn = not pyautogui.pixelMatchesColor(*yellowCirclePoint, (0, 0, 0), tolerance=50)
-    if isMyTurn:
-        print("My Turn!")
+
+
+def isYellowCircleDisplaying():    
+    return not pyautogui.pixelMatchesColor(*yellowCirclePoint, (0, 0, 0), tolerance=50)
+
+def checkMyTurn():
+    while True:
+        if isYellowCircleDisplaying():
+            print("My Turn!")
+            return
+        else:
+            print("Not my turn")
+            time.sleep(0.5)
+            continue
+
+
+def main():
+    while True:
+        checkMyTurn()
+
+        myHand=getHand()
+    
         if(checkRange(myHand, allinRange)):
             print("In all-in range. I'm all-in")
             allIn()
+        
         else:
             print("Not in all-in range. I fold")
             fold()
 
-        isMyTurn=False
+        time.sleep(5)
+    
+    
 
-        thread.cancel()
-    else:
-        #print("Not my turn")
-        return
-'''
-getNumber()
-getSuit()
-myHand=cardsToHand(myCards)
-print("My hand: " + myHand)
-getMyRound()
-'''
-print(checkRange('AdJs',allinRange))
+if __name__ == "__main__":
+    main()
 
